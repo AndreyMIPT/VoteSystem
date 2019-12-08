@@ -15,7 +15,7 @@
 #define PORT 8888 
 #define NUM_OF_BLOCKCH 3
 #define BLOCKCH_PORT 8080
-#define SIZE_OF_DATA 1024
+#define SIZE_OF_DATA 2048
 #define SIZE_OF_OK sizeof(bool)
 #define SIZE_OF_HASH 64
 #define SIZE_OF_BLOCK sizeof(struct data_to_send)
@@ -27,7 +27,7 @@ int main(int argc, char const *argv[])
     struct sockaddr_in address, blockch_addr; 
     int opt = 1; 
     int addrlen = sizeof(address); 
-    char data[SIZE_OF_DATA] = {123}; 
+    char data[SIZE_OF_DATA] = {}; 
     std::string hello = "Hello from server";
     int ret;
     std::string hash;
@@ -130,12 +130,16 @@ for (int i = 0; i < NUM_OF_BLOCKCH; ++i)
 while(1)
     {
         //ret = 0;
-        int res = recv( new_socket , data, SIZE_OF_DATA, 0);
-        if (res <= 0)
-            return 1;
-        std::cout << "recive data=" << data;
-        printf("%s\n", data );
 
+        int res = 0;
+        while( res < SIZE_OF_DATA)
+        {
+            int gotit = recv( new_socket , data + res, SIZE_OF_DATA - res, 0);
+            res += gotit;
+            if (gotit <= 0)
+                return 1;
+        }
+        std::cout << "recive data=" << data << endl;
         for (int i = 0; i < NUM_OF_BLOCKCH; ++i)
         {
             send(blockch_socket[i] , data , SIZE_OF_DATA , 0);
@@ -167,7 +171,7 @@ while(1)
                 send( blockch_socket[i] , &block, SIZE_OF_BLOCK, 0);
             }
         hash = block._hash;
-        send( new_socket , &hash , SIZE_OF_HASH,0); 
+        send( new_socket , hash.c_str() , SIZE_OF_HASH,0); 
         printf("hash= %s\n", hash.c_str());
     
         

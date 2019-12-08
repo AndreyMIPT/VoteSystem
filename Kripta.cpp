@@ -23,6 +23,7 @@ using namespace std;
 void First_Thread(struct data_to_send* data, volatile bool& flag_prish, int socket)
 {
 	int res = recv(socket, data, sizeof(struct data_to_send), 0);
+    cout << "Anrdey" << res << " data" << data->_data[9] << endl;
 	if( res > 0)
 	{
 	    std::cout << "HashToServer " << data->_hash << std::endl;
@@ -68,30 +69,30 @@ int main(int argc, char* argv[])
 	int sock = 0, valread; 
     struct sockaddr_in serv_addr;
     data_to_send data_1;
-    char hello[] = "Hello from client"; 
-    char buffer[1024] = {0}; 
-	volatile bool flag_prish = 0;    
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
-    { 
-        cout << "\n Socket creation error \n"; 
+    char hello[] = "Hello from client";
+    char buffer[2048] = {0};
+	volatile bool flag_prish = 0;
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        cout << "\n Socket creation error \n";
         return -1; 
-    } 
+    }
    
-    serv_addr.sin_family = AF_INET; 
-    serv_addr.sin_port = htons(PORT); 
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
        
-    // Convert IPv4 and IPv6 addresses from text to binary form 
-    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)  
-    { 
-        cout << "\nInvalid address/ Address not supported \n"; 
-        return -1; 
-    } 
+    // Convert IPv4 and IPv6 addresses from text to binary form
+    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)
+    {
+        cout << "\nInvalid address/ Address not supported \n";
+        return -1;
+    }
    
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) 
-    { 
-        cout << "\nConnection Failed \n"; 
-        return -1; 
-    } 
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+        cout << "\nConnection Failed \n";
+        return -1;
+    }
 
 	
 	/* Create the blockchain */
@@ -102,8 +103,8 @@ int main(int argc, char* argv[])
 	{
 		Block block;
         
-		char buffer[1024] = {0}; 
-		recv( sock, buffer, 1024 , 0); 
+		char buffer[2048] = {0};
+		recv( sock, buffer, 2048 , 0);
 
 		flag_prish = 0;
 		

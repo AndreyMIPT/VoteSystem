@@ -5,7 +5,7 @@ import json
 
 TCP_IP = '127.0.0.1'
 TCP_PORT = 8888
-BUFFER_SIZE = 512
+BUFFER_SIZE = 1024
 HASH_SIZE = 64
 
 lst = [1, 0] * (BUFFER_SIZE)

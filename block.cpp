@@ -32,7 +32,7 @@ Block::Block():
 
 Block::Block(const char* data)
 {
-	memcpy(_data, data, sizeof(data));
+	memcpy(_data, data, sizeof(_data));
 }
 
 /// Returns this block's hash
