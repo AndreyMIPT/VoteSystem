@@ -11,6 +11,14 @@
 #include <openssl/evp.h>
 #include <openssl/pem.h>
 
-int create_keys(EVP_PKEY *private_key, EVP_PKEY *public_key);
+#define MAX_KEY_SIZE 10000
+
+typedef struct key_s
+{
+	pid_t pid;
+	char public_key[MAX_KEY_SIZE];
+} key_t;
+
+int create_keys(char *private_key, char *public_key);
 
 #endif

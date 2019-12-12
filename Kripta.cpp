@@ -8,6 +8,7 @@
 #include <thread>
 #include <poll.h>
 #include <fstream>
+#include "keys.h"
 #define PORT 8080
 
 using namespace std;
@@ -32,38 +33,6 @@ void First_Thread(struct data_to_send* data, volatile bool& flag_prish, int sock
 	exit(0);
 }
 
-void record_thread(BlockChain bc, int socket)
-{
-	int ret = 0;
-	struct pollfd fd;
-	fd.fd = socket;
-    fd.events = POLLHUP;
-	while( ret == 0)
-	{	
-		// ждём до 10 секунд
-    	ret = poll( &fd, 1, 10000 );
-    	// Проверяем успешность вызова
-    	if ( ret == 0  ) {continue;}
-    	else if ( ret == -1 ) {return;}
-    	// таймаут, событий не произошло
-    	else
-    	{
-    		std::ofstream myout;          // поток для записи
-    		myout.open("BlockChain.txt");             // окрываем файл для записи
-    		if (myout.is_open())
-    		{
-    			vector<data_to_send> v = bc.RecordToDisk();
-    			for (auto t : v)
-    			{
-    				myout << t._nonce << t._data << t._hash << t._prevHash; 
-    			}
-    		    myout.close();
-    		}
-
-    	}
-    }
-}
-
 int main(int argc, char* argv[])
 {
 	int sock = 0, valread; 
@@ -72,6 +41,15 @@ int main(int argc, char* argv[])
     char hello[] = "Hello from client";
     char buffer[2048] = {0};
 	volatile bool flag_prish = 0;
+
+	char private_key[MAX_KEY_SIZE] = {};
+	char public_key[MAX_KEY_SIZE] = {};
+
+	create_keys(private_key, public_key);
+	key_t key;
+	key.pid = getpid();
+	key.public_key = public_key;
+
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         cout << "\n Socket creation error \n";
@@ -82,7 +60,7 @@ int main(int argc, char* argv[])
     serv_addr.sin_port = htons(PORT);
        
     // Convert IPv4 and IPv6 addresses from text to binary form
-    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)
+    if(inet_pton(AF_INET, "192.168.0.165", &serv_addr.sin_addr)<=0)
     {
         cout << "\nInvalid address/ Address not supported \n";
         return -1;
@@ -94,11 +72,11 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+	send(sock, &key, sizeof(key), 0);
 	
 	/* Create the blockchain */
 
 	BlockChain bc;
-	thread thread_0(record_thread, bc, sock);
 	while (1)
 	{
 		Block block;
