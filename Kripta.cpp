@@ -46,9 +46,9 @@ int main(int argc, char* argv[])
 	char public_key[MAX_KEY_SIZE] = {};
 
 	create_keys(private_key, public_key);
-	key_t key;
+	key_send_t key;
 	key.pid = getpid();
-	key.public_key = public_key;
+	strcpy(key.public_key, public_key);
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {

@@ -13,11 +13,11 @@
 
 #define MAX_KEY_SIZE 10000
 
-typedef struct key_s
+typedef struct key_send_s
 {
 	pid_t pid;
 	char public_key[MAX_KEY_SIZE];
-} key_t;
+} key_send_t;
 
 int create_keys(char *private_key, char *public_key);
 
