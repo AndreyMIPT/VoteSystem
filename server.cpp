@@ -10,7 +10,8 @@
 #include <poll.h>
 #include <memory>
 #include <chrono>
-#include "block.h" 
+#include "block.h"
+#include "keys.h"
 
 #define PORT 8888 
 #define NUM_OF_BLOCKCH 3
@@ -32,6 +33,7 @@ int main(int argc, char const *argv[])
     int ret;
     std::string hash;
     struct data_to_send block;
+    struct key_send_s key[NUM_OF_BLOCKCH];
     
     struct pollfd fds[NUM_OF_BLOCKCH];
        
@@ -126,6 +128,10 @@ for (int i = 0; i < NUM_OF_BLOCKCH; ++i)
     fds[i].fd = blockch_socket[i];
     fds[i].events = POLLIN;
 }
+    for (int j = 0; j < NUM_OF_BLOCKCH ; ++j) {
+        recv( blockch_socket[j] , &key[j], sizeof(key[j]), 0);
+        cout << key[j].pid << key[j].public_key << endl;
+     };
 //workspace
 while(1)
     {
