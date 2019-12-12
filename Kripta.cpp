@@ -50,14 +50,6 @@ int main(int argc, char* argv[])
 	key.pid = getpid();
 	strcpy(key.public_key, public_key);
 
-	cout << public_key << endl;
-
-	char encrypted_msg[4096] = {};
-	int res = encrypt_msg(public_key, "alo", encrypted_msg);
-	cout << "result = " << res << endl;
-	cout << "encrypted_msg = " << encrypted_msg << endl;
-	cout << "encrypted msg size = " << strlen(encrypted_msg) << endl;
-
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         cout << "\n Socket creation error \n";
@@ -110,6 +102,7 @@ int main(int argc, char* argv[])
 		if (flag_prish == 0)
 		{
 			auto tmp = self_block.generate_data();
+			cout << tmp._data << endl;
 			send(sock, &tmp, sizeof(tmp), 0);
 		}
 		
