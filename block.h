@@ -12,7 +12,7 @@ struct data_to_send
 {
 	int64_t _nonce; /// The counter for mining
 	//char _timestamp[64]; /// The timestamp of creation
-	char _data[2048]; /// The smart contract
+	char _data[2048*8]; /// The smart contract
 	char _hash[65]; /// The current hash
 	char _prevHash[65];
 } __attribute((packed));
@@ -63,7 +63,7 @@ public:
 private:
 	int64_t _nonce; /// The counter for mining
 	//string _timestamp; /// The timestamp of creation
-	char _data[2048]; /// The smart contract
+	char _data[2048*8]; /// The smart contract
 	string _hash; /// The current hash
 	string _prevHash;
 

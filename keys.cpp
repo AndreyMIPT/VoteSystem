@@ -20,11 +20,11 @@ int create_keys(char *private_key, char *public_key)
 	return 0;
 }
 
-int encrypt_msg(const char *public_key, const char *msg, char *result)
+int encrypt_msg(const char *public_key, const char *msg, char *result, int len)
 {
 	BIO *bio = BIO_new_mem_buf((void *)public_key, strlen(public_key));
 	RSA *rsa = NULL;
 	PEM_read_bio_RSAPublicKey(bio, &rsa, NULL, NULL);
 
-	return RSA_public_encrypt(strlen(msg), (unsigned char *)msg, (unsigned char *)result, rsa, RSA_PKCS1_PADDING);
+	return RSA_public_encrypt(len, (unsigned char *)msg, (unsigned char *)result, rsa, RSA_PKCS1_PADDING);
 }

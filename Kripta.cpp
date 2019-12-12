@@ -21,7 +21,7 @@ using namespace std;
    дескриптор серверного сокета (listen_socket)
 */
 
-void First_Thread(struct data_to_send* data, volatile bool& flag_prish, int socket)
+void First_Thread(struct data_to_send* data, volatile bool& flag_prish, int socket, const char* private_key)
 {
 	int res = recv(socket, data, sizeof(struct data_to_send), 0);
     cout << "Anrdey" << res << " data" << data->_data[9] << endl;
@@ -29,8 +29,13 @@ void First_Thread(struct data_to_send* data, volatile bool& flag_prish, int sock
 	{
 	    std::cout << "HashToServer " << data->_hash << std::endl;
 	    flag_prish = 1;
-	}else
-	exit(0);
+	}else {
+	    std::string filename = "Pr_key" + std::to_string(getpid()) + ".pem";
+	    std::ofstream out(filename);
+        out << private_key;
+        out.close();
+        exit(0);
+    }
 }
 
 int main(int argc, char* argv[])
@@ -39,7 +44,7 @@ int main(int argc, char* argv[])
     struct sockaddr_in serv_addr;
     data_to_send data_1;
     char hello[] = "Hello from client";
-    char buffer[2048] = {0};
+    char buffer[2048*8] = {0};
 	volatile bool flag_prish = 0;
 
 	char private_key[MAX_KEY_SIZE] = {};
@@ -60,7 +65,7 @@ int main(int argc, char* argv[])
     serv_addr.sin_port = htons(PORT);
        
     // Convert IPv4 and IPv6 addresses from text to binary form
-    if(inet_pton(AF_INET, "192.168.0.165", &serv_addr.sin_addr)<=0)
+    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)
     {
         cout << "\nInvalid address/ Address not supported \n";
         return -1;
@@ -87,13 +92,13 @@ int main(int argc, char* argv[])
 	{
 		Block block;
         
-		char buffer[2048] = {0};
-		recv( sock, buffer, 2048 , 0);
+		char buffer[2048*8] = {0};
+		recv( sock, buffer, 2048*8 , 0);
 
 		flag_prish = 0;
 		
 		data_1 = block.generate_data();
-		thread thread_1(First_Thread, &data_1, ref(flag_prish), sock);
+		thread thread_1(First_Thread, &data_1, ref(flag_prish), sock, private_key);
         
         Block self_block(buffer);
         cout << bc.GetLastBlockHash() << endl;

@@ -20,6 +20,6 @@ typedef struct key_send_s
 } key_send_t;
 
 int create_keys(char *private_key, char *public_key);
-int encrypt_msg(const char *public_key, const char *msg, char *result);
+int encrypt_msg(const char *public_key, const char *msg, char *result, int len);
 
 #endif
