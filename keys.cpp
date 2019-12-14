@@ -26,5 +26,5 @@ int encrypt_msg(const char *public_key, const char *msg, char *result, int len)
 	RSA *rsa = NULL;
 	PEM_read_bio_RSAPublicKey(bio, &rsa, NULL, NULL);
 
-	return RSA_public_encrypt(len, (unsigned char *)msg, (unsigned char *)result, rsa, RSA_PKCS1_PADDING);
+	return RSA_public_encrypt(len, (unsigned char *)msg, (unsigned char *)result, rsa, RSA_PKCS1_OAEP_PADDING);
 }

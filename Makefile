@@ -5,7 +5,7 @@ build: blockchain
 
 blockchain: blockchain.o block.o keys.o Kripta.o
 	mkdir -p bin
-	$(CC) blockchain.o block.o keys.o Kripta.o -o bin/blockchain -lssl -lcrypto
+	$(CC) blockchain.o block.o keys.o Kripta.o -o bin/blockchain -lssl -lcrypto -lpthread
 	rm *.o
 
 blockchain.o: blockchain.cpp
